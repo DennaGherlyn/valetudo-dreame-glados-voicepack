@@ -22,3 +22,11 @@ while IFS=, read -r name quotedtext; do
       'https://glados.c-net.org/generate'
   fi
 done < $inputfile
+
+test -e custom || exit
+
+cd custom
+
+for f in *.mp3; do
+  ffmpeg -i "$f" ../"$outputdir"/"${f%.*}.wav"
+done

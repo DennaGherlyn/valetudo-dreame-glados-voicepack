@@ -1,12 +1,15 @@
 #!/bin/bash -e
-#
-# Package wav files in a directory to embed in a dustcloud image or upload to Valetudo for xiaomi gen1 and gen2.
-# Requires ccrypt.
 
-dir=output/result
-sound_password="r0ckrobo#23456"
+cd output/result
 
-mkdir -p $dir
+tar czv * > ../voice_pack.tar.gz
 
-cd $dir
-tar zc *.wav | ccrypt -e -K "$sound_password" > voicepack.pkg
+cd ../..
+
+ls -l output/voice_pack.tar.gz
+md5sum output/voice_pack.tar.gz
+
+echo "Host the file with python3 -m http.server"
+echo "Visit the Valetudo web interface"
+echo "Select Hamburger menu / Robot settings / Misc Settings"
+echo "Enter the hosted voice pack URL, GLaDOS language code, MD5 Hash from above"
