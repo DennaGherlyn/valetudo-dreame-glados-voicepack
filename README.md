@@ -1,10 +1,12 @@
 # GLaDOS voice pack builder
 
-Give some personality to your Xiaomi vacuum by creating your own GLaDOS voice pack.
+Give some personality to your Dreame vacuum by creating your own GLaDOS voice pack.
 
 The script reads the text from the csv file in GLaDOS' voice and packages it for upload to your vacuum. It's been tested with a gen1 running [Valetudo](https://valetudo.cloud/) but should also work with other generations and with other ways of installing the voice pack. Especially combined with some [original samples](http://www.portal2sounds.com/#w=glados) it can lead to some cool results.
 
 Want to hear what she sounds like first? Check out [GLaDOS voice generator](https://glados.c-net.org/).
+
+These scripts are based on the work of [arner](https://github.com/arner/roborock-glados) and [mic-e](https://github.com/mic-e/valetudo-glados). I heavily modifed `01-speak.sh` to make it more flexible and added `00-transscribe.sh` for making the initial generation of the necessary voice lines for different vacuum models easier.
 
 ## I'm not creative, just give me a voice pack!
 
@@ -14,16 +16,72 @@ You're doing a great job of disappointing me. Go on, go to the [releases page](h
 
 - curl to call the GLaDOS voice generator API.
 - [ffmpeg](http://ffmpeg.org/) and ffmpeg-normalize (`pip install ffmpeg-normalize`) to normalize the volume of the voice files.
-- ccrypt to package the wav files.
+- [OpenAI Whisper](https://github.com/openai/whisper) for transcribing audio (optional, for 00-transscribe.sh).
 
 ## Usage
 
 - `git clone` this repo
-- Change the lines in the csv file from the xiaomi default to something you want GLaDOS to say.
-- Run `./01-speak.sh` to generate the speech.
-- Run `./02-process.sh` to normalize the volume.
-- Run `./03-package.sh` to package the wav files.
-- Visit Valetudo in your browser (the IP of your vacuum) and go to Settings -> Sound and voice. Upload the generated .pkg file from the output/result directory and press 'Upload Voice Pack'.
+- **Either** change the lines in the csv file from the Dreame default to something you want GLaDOS to say 
+- **Or** transcribe your robots voice lines with Whisper (or any other software). 
+  - Some of those files you can find on [dgiese's Robot Overview](https://robotinfo.dev/).
+  - Make sure you use the correct voice files for your robot, otherwise you might end up with a voice pack that doesn't have all necessary lines for your robot. E.g. `Dreame L10s Pro Ultra Heat` has 480 voice lines, `Dreame Bot L10S Pro` has only 137.
+
+### Transcribe existing audio (optional)
+
+You can transcribe your own audio files to CSV using Whisper:
+
+```sh
+./00-transscribe.sh [extension] [source_path] [output_csv]
+```
+- `extension`: File extension to filter for (default: ogg)
+- `source_path`: Directory to search for audio files (default: .)
+- `output_csv`: Output CSV file name (default: transcriptions.csv)
+
+**Examples:**
+- `./00-transscribe.sh`  
+  Transcribes all `.ogg` files in current directory and writes to `transcriptions.csv`
+- `./00-transscribe.sh wav ./audio myresults.csv`  
+  Transcribes all `.wav` files in `./audio` and writes to `myresults.csv`
+
+### Generate GLaDOS speech
+
+```sh
+./01-speak.sh [csvfile] [name_column_name] [text_column_name] [--no-header] [--dry-run] [--debug]
+```
+- `csvfile`: Input CSV file (default: audio_default.csv)
+- `name_column_name`: Name or index of the column for output filenames (default: name)
+- `text_column_name`: Name or index of the column for text to speak (default: text)
+- `--no-header`: Use if your CSV does not have a header row
+- `--dry-run`: Show what would be generated, but do not call the API
+- `--debug`: Show debug output
+
+**Examples:**
+- `./01-speak.sh`
+- `./01-speak.sh mylines.csv`
+- `./01-speak.sh mylines.csv name text`
+- `./01-speak.sh mylines.csv id sentence`
+- `./01-speak.sh mylines.csv --no-header`
+- `./01-speak.sh mylines.csv name text --dry-run --debug`
+- `./01-speak.sh mylines.csv name text --no-header --dry-run --debug`
+
+### Normalize and encode audio
+
+```sh
+./02-process.sh
+```
+Normalizes the volume and encodes the files for Dreame robots.
+
+### Package for upload
+
+```sh
+./03-package.sh
+```
+Packages the ogg files for upload.
+
+### Upload to your vacuum
+
+- Visit Valetudo in your browser (the IP of your vacuum) and go to Settings -> Sound and voice.
+- Upload the generated .pkg file from the output/result directory and press 'Upload Voice Pack'.
 - Done!
 
 If you created a custom csv file, please be so kind to share it back so others can benefit from it.
