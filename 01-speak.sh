@@ -8,28 +8,33 @@
 # Usage: ./01-speak.sh [csvfile] [name_column_name] [text_column_name] [--no-header] [--dry-run] [--debug]
 #
 # Examples:
-#   ./01-speak.sh
-#     # Uses audio_default.csv, columns "name" and "text" with header
 #
-#   ./01-speak.sh mylines.csv
-#     # Uses mylines.csv, columns "name" and "text" with header
+#   ./01-speak.sh custom_lines.csv
+#     # Uses custom_lines.csv, columns "name" and "text" with header
 #
-#   ./01-speak.sh mylines.csv name text
-#     # Uses mylines.csv, columns "name" and "text" with header
+#   ./01-speak.sh custom_lines.csv name text
+#     # Uses custom_lines.csv, columns "name" and "text" with header
 #
-#   ./01-speak.sh mylines.csv id sentence
-#     # Uses mylines.csv, columns "id" and "sentence" with header
+#   ./01-speak.sh custom_lines.csv id sentence
+#     # Uses custom_lines.csv, columns "id" and "sentence" with header
 #
-#   ./01-speak.sh mylines.csv --no-header
-#     # Uses mylines.csv, no header row
+#   ./01-speak.sh custom_lines.csv --no-header
+#     # Uses custom_lines.csv, no header row
 #
-#   ./01-speak.sh mylines.csv name text --dry-run --debug
+#   ./01-speak.sh custom_lines.csv name text --dry-run --debug
 #     # Shows what would be generated, with debug output
 #
-#   ./01-speak.sh mylines.csv name text --no-header --dry-run --debug
+#   ./01-speak.sh custom_lines.csv name text --no-header --dry-run --debug
 #     # No header, dry run, debug output
+#
 
-inputfile=${1:-audio_default.csv}
+if [[ -z "$1" ]]; then
+  echo "Usage: $0 [csvfile] [name_column_name] [text_column_name] [--no-header] [--dry-run] [--debug]"
+  echo "Error: csvfile argument is required."
+  exit 1
+fi
+
+inputfile="$1"
 namecol=${2:-name}
 textcol=${3:-text}
 noheader=0
