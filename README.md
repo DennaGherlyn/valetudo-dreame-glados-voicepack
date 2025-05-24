@@ -128,6 +128,6 @@ If you are using [Home Assistant](https://www.home-assistant.io/), you can combi
 
 ## Credits
 
-- Thanks to the folks over at [DustCloud](https://github.com/dgiese/dustcloud) for freeing our vacuums (and [transcribing the default voice](https://github.com/dgiese/dustcloud/blob/master/devices/xiaomi.vacuum/audio_generator/language/audio_en.csv)).
-- [Valetudo](https://valetudo.cloud/) for the great UX.
+- Thanks to the folks over at [DustCloud](https://github.com/dgiese/dustcloud) for freeing our vacuums.
+- [Valetudo](https://valetudo.cloud/) for the cloud replacement and great UX.
 - [b01t](https://dhampir.no/) for providing an API to his [GLaDOS voice generator](https://glados.c-net.org/).
